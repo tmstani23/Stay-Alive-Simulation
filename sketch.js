@@ -1,15 +1,20 @@
 
-var v;
+var vehicles = [];
 var food = [];
 var poison = [];
 
 function setup() {
   createCanvas(640,360);
-  //create a new vehicle in the center of the canvas:
-  v = new Vehicle(width/2, height/2);
+  for (var i = 0; i < 10; i++) {
+    //create a new vehicles at random locations on the canvas:
+    var x = random(width);
+    var y = random(height);
+    vehicles[i] = new Vehicle(x, y);
+  }
+  
   
   //add x/y locations to food array:
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 50; i++) {
     var x = random(width);
     var y = random(height);
     food.push(createVector(x, y));
@@ -26,7 +31,13 @@ function setup() {
 
 function draw() {
   background(51);
-  
+  //every once in a while add new feed at random location
+  if (random(1) < 0.05) {
+    var x = random(width);
+    var y = random(height);
+    food.push(createVector(x, y));
+  }
+
   //draw the food:
   for (var i = 0; i < food.length; i++){
     fill(0, 255, 0);
@@ -42,11 +53,16 @@ function draw() {
   }
 
   // Call the appropriate steering behaviors for our agents
-  
-  v.eat(food);
-  v.eat(poison);
-  //v.arrive(mouse);
-  v.update();
-  v.display();
+  //iterate through vehicles array backwards and call functions on each vehicle
+  //backwards to avoid issues with deleted elements within the array
+  for (var i = vehicles.length -1; i >=0; i--) {
+    vehicles[i].behaviors(food, poison);
+    vehicles[i].update();
+    vehicles[i].display();
 
+    if (vehicles[i].dead()) {
+      //remove one current iteration element from the vehicles array:
+      vehicles.splice(i, 1);    
+    }
+  }
 }
