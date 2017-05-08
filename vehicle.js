@@ -12,8 +12,14 @@ function Vehicle(x,y) {
   this.health = 1;
 
   this.dna = [];
-  this.dna[0] = random(-5, 5);
-  this.dna[1] = random(-5, 5);
+  //Food weight:
+  this.dna[0] = random(-2, 2);
+  //Poison weight:
+  this.dna[1] = random(-2, 2);
+  //Food perception radius
+  this.dna[2] = random(10, 100);
+  //Poison perception radius
+  this.dna[3] = random(10, 100);
 
   // Method to update location
   this.update = function() {
@@ -35,9 +41,9 @@ function Vehicle(x,y) {
 
   this.behaviors = function(good, bad) {
     //.1 is the amount added to health when it eats food
-    var steerG = this.eat(good, 0.1);
-    //.2 is the amount subtracted from health when it eats poison
-    var steerB = this.eat(bad, -0.2);
+    var steerG = this.eat(good, 0.2, this.dna[2]);
+    //.4 is the amount subtracted from health when it eats poison
+    var steerB = this.eat(bad, -0.5, this.dna[3]);
     
     steerG.mult(this.dna[0]);
     steerB.mult(this.dna[1]);
@@ -47,7 +53,7 @@ function Vehicle(x,y) {
   }
   
   //eat function
-  this.eat = function(list, nutrition){
+  this.eat = function(list, nutrition, perception){
     var record = Infinity;
     var closest = -1;
     //iterate through the the list input as an argument up to its length:
@@ -55,20 +61,19 @@ function Vehicle(x,y) {
       //store distance between current vehicle
       // position and current list element i:
       var d = this.position.dist(list[i]);
-      
-      if (d < record) {
+      if (d < record && d < perception) {
         //set record to distance
         record = d;
         //closest = current list element
         closest = i;
-      }; 
-    };
-  //eating occurs here:
-  if (record < 5) {
+      } 
+    }
+    //eating occurs here:
+    if (record < 5) {
     //splice removes the chosen index from the array
     //the 1 is how many elements to remove
-    list.splice(closest, 1);
-    this.health += nutrition;
+      list.splice(closest, 1);
+      this.health += nutrition;
   }
   //execute arrive function with closest as its target:
   else if (closest > -1) {
@@ -82,16 +87,8 @@ function Vehicle(x,y) {
   // STEER = DESIRED MINUS VELOCITY
   this.arrive = function(target) {
     var desired = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
-    var d = desired.mag();
-    // Scale with arbitrary damping within 100 pixels
-    if (d < 100) {
-      var m = map(d,0,100,0,this.maxspeed);
-      desired.setMag(m);
-    }
-    else {
-      desired.setMag(this.maxspeed);
-    }
-
+    //Set maximum speed:
+    desired.setMag(this.maxspeed);
     // Steering = Desired minus Velocity
     var steer = p5.Vector.sub(desired,this.velocity);
     steer.limit(this.maxforce);  // Limit to maximum steering force
@@ -106,15 +103,20 @@ function Vehicle(x,y) {
   this.display = function() {
     // Draw a triangle rotated in the direction of velocity
     var theta = this.velocity.heading() + PI/2;
-   
     push();
     translate(this.position.x,this.position.y);
     rotate(theta);
     
+    strokeWeight(3);
+    //draw debug visualizations for poison/food radius and weights/headings of vehicles
     stroke(0, 255, 0);
-    line(0, 0, 0, -this.dna[0] * 20);
+    noFill();
+    line(0, 0, 0, -this.dna[0] * 25);
+    strokeWeight(2);
+    ellipse(0,0, this.dna[2] * 2);
     stroke(255, 0, 0);
-    line(0, 0, 0, -this.dna[1] * 20);
+    line(0, 0, 0, -this.dna[1] * 25);
+    ellipse(0,0, this.dna[3] * 2);
     
     var green = color(0, 255, 0);
     var red = color(255, 0 ,0);
@@ -132,5 +134,32 @@ function Vehicle(x,y) {
     endShape(CLOSE);
     
     pop();
-  };
+  }
+
+  this.boundaries = function() {
+    var d = 25;
+    var desired = null;
+
+    if (this.position.x < d) {
+      desired = createVector(this.maxspeed, this.velocity.y);
+    }
+    else if (this.position.x > width -d) {
+      desired = createVector(-this.maxspeed, this.velocity.y);
+    }
+
+    if (this.position.y < d) {
+      desired = createVector(this.velocity.x, this.maxspeed);
+    }
+    else if (this.position.y > height-d) {
+      desired = createVector(this.velocity.x, -this.maxspeed);
+    }
+
+    if (desired !== null) {
+      desired.normalize();
+      desired.mult(this.maxspeed);
+      var steer = p5.Vector.sub(desired, this.velocity);
+      steer.limit(this.maxforce);
+      this.applyForce(steer);
+    }
+  }
 }
