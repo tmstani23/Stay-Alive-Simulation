@@ -1,7 +1,8 @@
 
-// The "Vehicle" class
+var mutationRate = 0.1;
 
-function Vehicle(x,y) {
+// The "Vehicle" class
+function Vehicle(x,y, dna) {
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -11,20 +12,46 @@ function Vehicle(x,y) {
   this.maxforce = 0.1;
   this.health = 1;
 
+
   this.dna = [];
-  //Food weight:
-  this.dna[0] = random(-2, 2);
-  //Poison weight:
-  this.dna[1] = random(-2, 2);
-  //Food perception radius
-  this.dna[2] = random(10, 100);
-  //Poison perception radius
-  this.dna[3] = random(10, 100);
+  
+  if (dna == undefined) {
+    //Food weight:
+    this.dna[0] = random(-2, 2);
+    //Poison weight:
+    this.dna[1] = random(-2, 2);
+    //Food perception radius
+    this.dna[2] = random(10, 100);
+    //Poison perception radius
+    this.dna[3] = random(10, 100);
+  } else {
+    //Mutation:
+    this.dna[0] = dna[0];
+    if (random(1) < mutationRate) {
+      //adjust dna food weight by tiny random amount
+      this.dna[0] += random(-.01, 0.1); 
+    }
+    this.dna[1] = dna[1];
+    if (random(1) < mutationRate) {
+      //adjust dna poison weight by tiny random amount
+      this.dna[1] += random(-.01, 0.1); 
+    }
+    this.dna[2] = dna[2];
+    if (random(1) < mutationRate) {
+      //adjust dna food perception by tiny random amount
+      this.dna[2] += random(-10, 10); 
+    }
+    this.dna[3] = dna[3];
+    if (random(1) < mutationRate) {
+      //adjust dna poison perception by tiny random amount
+      this.dna[3] += random(-10, 10); 
+    }
+  }
 
   // Method to update location
   this.update = function() {
     //vehicles lose a little health each frame:
-    this.health -= 0.001;
+    this.health -= 0.005;
     // Update velocity
     this.velocity.add(this.acceleration);
     // Limit speed
@@ -41,9 +68,9 @@ function Vehicle(x,y) {
 
   this.behaviors = function(good, bad) {
     //.1 is the amount added to health when it eats food
-    var steerG = this.eat(good, 0.2, this.dna[2]);
+    var steerG = this.eat(good, 0.3, this.dna[2]);
     //.4 is the amount subtracted from health when it eats poison
-    var steerB = this.eat(bad, -0.5, this.dna[3]);
+    var steerB = this.eat(bad, -0.75, this.dna[3]);
     
     steerG.mult(this.dna[0]);
     steerB.mult(this.dna[1]);
@@ -51,34 +78,48 @@ function Vehicle(x,y) {
     this.applyForce(steerG);
     this.applyForce(steerB);
   }
-  
+  //clone function creates a new vehicle randomly
+  this.clone = function() {
+    if (random(1) < 0.0025) {
+      //create new vehicle with current vehicle's dna
+      return new Vehicle(this.position.x, this.position.y, this.dna);
+    } else {
+        return null;
+    }
+  }
+
+
   //eat function
   this.eat = function(list, nutrition, perception){
     var record = Infinity;
-    var closest = -1;
+    var closest = null;
     //iterate through the the list input as an argument up to its length:
-    for (var i = 0; i < list.length; i++) {
+    for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
       var d = this.position.dist(list[i]);
-      if (d < record && d < perception) {
-        //set record to distance
-        record = d;
-        //closest = current list element
-        closest = i;
-      } 
+      
+      //eating occurs here:
+      if (d < this.maxspeed) {
+      //splice removes the chosen index from the array
+      //the 1 is how many elements to remove
+        list.splice(i, 1);
+        this.health += nutrition;
+      } else {
+      
+        if (d < record && d < perception) {
+          //set record to distance
+          record = d;
+          //closest = current list element
+          closest = list[i];
+        } 
+      }
     }
-    //eating occurs here:
-    if (record < 5) {
-    //splice removes the chosen index from the array
-    //the 1 is how many elements to remove
-      list.splice(closest, 1);
-      this.health += nutrition;
-  }
-  //execute arrive function with closest as its target:
-  else if (closest > -1) {
-    return this.arrive(list[closest]);
-  }
+    
+    //execute arrive function with closest as its target:
+    if (closest != null) {
+      return this.arrive(closest);
+    }
   
   return createVector(0, 0);
   };
