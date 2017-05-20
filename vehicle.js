@@ -1,8 +1,15 @@
 
 var mutationRate = 0.1;
+//amnt of health lost by agent per frame:
+//var healthLoss = .005;
+//this.foodValue = 0.3;
+//this.poisonValue = -0.75;
+
+
 
 // The "Vehicle" class
 function Vehicle(x,y, dna) {
+  var healthLoss = healthLostSlider.value() / 1000; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -11,6 +18,14 @@ function Vehicle(x,y, dna) {
   this.maxspeed = 4;
   this.maxforce = 0.1;
   this.health = 1;
+ 
+  //amnt gain/lost to health from food/poison:
+  this.foodValue = foodValueSlider.value() / 100;
+  this.poisonValue = -(poisonValueSlider.value() / 100);
+  print(this.poisonValue);
+  print(this.foodValue);
+  //rate at which vehicle clones itself:
+  this.cloneRate = 0.0025;
 
 
   this.dna = [];
@@ -51,7 +66,7 @@ function Vehicle(x,y, dna) {
   // Method to update location
   this.update = function() {
     //vehicles lose a little health each frame:
-    this.health -= 0.005;
+    this.health -= healthLoss;
     // Update velocity
     this.velocity.add(this.acceleration);
     // Limit speed
@@ -68,9 +83,9 @@ function Vehicle(x,y, dna) {
 
   this.behaviors = function(good, bad) {
     //.1 is the amount added to health when it eats food
-    var steerG = this.eat(good, 0.3, this.dna[2]);
+    var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //.4 is the amount subtracted from health when it eats poison
-    var steerB = this.eat(bad, -0.75, this.dna[3]);
+    var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
     
     steerG.mult(this.dna[0]);
     steerB.mult(this.dna[1]);
@@ -80,7 +95,7 @@ function Vehicle(x,y, dna) {
   }
   //clone function creates a new vehicle randomly
   this.clone = function() {
-    if (random(1) < 0.0025) {
+    if (random(1) < this.cloneRate) {
       //create new vehicle with current vehicle's dna
       return new Vehicle(this.position.x, this.position.y, this.dna);
     } else {
@@ -148,16 +163,18 @@ function Vehicle(x,y, dna) {
     translate(this.position.x,this.position.y);
     rotate(theta);
     
-    strokeWeight(3);
     //draw debug visualizations for poison/food radius and weights/headings of vehicles
-    stroke(0, 255, 0);
-    noFill();
-    line(0, 0, 0, -this.dna[0] * 25);
-    strokeWeight(2);
-    ellipse(0,0, this.dna[2] * 2);
-    stroke(255, 0, 0);
-    line(0, 0, 0, -this.dna[1] * 25);
-    ellipse(0,0, this.dna[3] * 2);
+    if (debug.checked()) {
+      strokeWeight(3);
+      stroke(0, 255, 0);
+      noFill();
+      line(0, 0, 0, -this.dna[0] * 25);
+      strokeWeight(2);
+      ellipse(0,0, this.dna[2] * 2);
+      stroke(255, 0, 0);
+      line(0, 0, 0, -this.dna[1] * 25);
+      ellipse(0,0, this.dna[3] * 2);
+    }
     
     var green = color(0, 255, 0);
     var red = color(255, 0 ,0);
