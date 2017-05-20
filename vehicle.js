@@ -1,10 +1,15 @@
 
 var mutationRate = 0.1;
 //amnt of health lost by agent per frame:
+//var healthLoss = .005;
+//this.foodValue = 0.3;
+//this.poisonValue = -0.75;
+
 
 
 // The "Vehicle" class
 function Vehicle(x,y, dna) {
+  var healthLoss = healthLostSlider.value() / 1000; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -13,10 +18,12 @@ function Vehicle(x,y, dna) {
   this.maxspeed = 4;
   this.maxforce = 0.1;
   this.health = 1;
-  this.healthLoss = .005;
+ 
   //amnt gain/lost to health from food/poison:
-  this.foodValue = 0.3;
-  this.poisonValue = -0.75;
+  this.foodValue = foodValueSlider.value() / 100;
+  this.poisonValue = -(poisonValueSlider.value() / 100);
+  print(this.poisonValue);
+  print(this.foodValue);
   //rate at which vehicle clones itself:
   this.cloneRate = 0.0025;
 
@@ -59,7 +66,7 @@ function Vehicle(x,y, dna) {
   // Method to update location
   this.update = function() {
     //vehicles lose a little health each frame:
-    this.health -= this.healthLoss;
+    this.health -= healthLoss;
     // Update velocity
     this.velocity.add(this.acceleration);
     // Limit speed
