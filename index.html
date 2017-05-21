@@ -7,7 +7,62 @@
   <!--<script language="javascript" src="libraries/p5.sound.js"></script>-->
   <script language="javascript" type="text/javascript" src="vehicle.js"></script>
   <script language="javascript" type="text/javascript" src="sketch.js"></script>
+
+  <style>
+    #canvas-holder {
+      display: flex;
+      background-color:darkslategrey;
+      width: 100%;
+      justify-content: center;
+      }
+    #preset-holder {
+      display: flex;
+      background-color:darkslategrey;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    #whileRun-holder {
+      display: flex;
+      background-color:darkslategrey;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      text-align: center;
+      color: darkslategrey;
+    }
+    p {
+      padding: 4px;
+      color:darkred;
+    }
+  </style>
 </head>
 <body>
+  <h1>Stay Alive Simulation</h1>
+  <div id="canvas-holder">
+  
+  </div>
+  <h3>Presets:</h3>
+  <div id='preset-holder'>
+    <p id='debug-holder'>Debug on/off</p>
+    
+    <p id='reset-holder'>Reset with current settings:  </p>
+    
+    <p id='sVeh-holder'>Number of starting vehicles:  </p>
+    <p id='sPoison-holder'>Amount of poison at start:  </p>
+    <p id='sFood-holder'>Amount of food at start:  </p>
+    <p id='foodV-holder'>Value food adds to health:  </p>
+    <p id='poisonV-holder'>Value poison subtracts from health:  </p>
+  </div>
+  <h3>For use while simulation runs:</h3>
+  <div id='whileRun-holder'>
+    <p id='hLost-holder'>Vehicle health loss per frame:  </p>
+    <p id='fSpawnR-holder'>Food Spawn Rate:  </p>
+    <p id='pSpawnR-holder'>Poison Spawn Rate:  </p>
+  </div>
 </body>
 </html>

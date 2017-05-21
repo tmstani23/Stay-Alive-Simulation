@@ -22,8 +22,6 @@ function Vehicle(x,y, dna) {
   //amnt gain/lost to health from food/poison:
   this.foodValue = foodValueSlider.value() / 100;
   this.poisonValue = -(poisonValueSlider.value() / 100);
-  print(this.poisonValue);
-  print(this.foodValue);
   //rate at which vehicle clones itself:
   this.cloneRate = 0.0025;
 
