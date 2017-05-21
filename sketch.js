@@ -16,33 +16,39 @@ var debug;
 
 function setup() {
 
-  createCanvas(640, 360);
-  createP('Debug on/off:');
+  var canvas = createCanvas(640, 360);
+  canvas.parent('canvas-holder');
   debug = createCheckbox();
-  createP('Reset with current settings:');
+  debug.parent('debug-holder');
+  
   var resetButton = createButton("reset");
-
-  createP("Number of Starting Vehicles:");
+  resetButton.parent('reset-holder');
+  
   startingVeh = createSlider(0, 100, 50);
-  createP("Amount of poison at start:");
-  startingPoison = createSlider(0, 40, 20);
-  createP("Amount of food at start:");
-  startingFood = createSlider(0, 80, 40);
-  createP("Value food adds to health when eaten:");
-  foodValueSlider = createSlider(0, 100, 25);
-  createP("Value poison subtracts from health when eaten:");
-  poisonValueSlider = createSlider(0, 100, 75);
-  createP("For use while simulation is running:")
-  createP('Vehicle health loss per frame:');
-  healthLostSlider = createSlider(0, 10, 5);
-  createP('Food Spawn Rate:');
-  foodSpawnR = createSlider(0, 20, 10);
-  createP('Poison Spawn Rate:');
-  poisonSpawnR = createSlider(0, 5, 2.5);
-  
+  startingVeh.parent('sVeh-holder');
  
+  startingPoison = createSlider(0, 40, 20);
+  startingPoison.parent('sPoison-holder');
+ 
+  startingFood = createSlider(0, 80, 40);
+  startingFood.parent('sFood-holder');
+ 
+  foodValueSlider = createSlider(0, 100, 25);
+  foodValueSlider.parent('foodV-holder');
   
-  resetButton.mousePressed(clearVars);
+  poisonValueSlider = createSlider(0, 100, 75);
+  poisonValueSlider.parent('poisonV-holder');
+
+  healthLostSlider = createSlider(0, 10, 5);
+  healthLostSlider.parent('hLost-holder');
+  
+  foodSpawnR = createSlider(0, 20, 10);
+  foodSpawnR.parent('fSpawnR-holder');
+ 
+  poisonSpawnR = createSlider(0, 5, 2.5);
+  poisonSpawnR.parent('pSpawnR-holder');
+  
+ resetButton.mousePressed(clearVars);
   resetSketch();
 }
 
