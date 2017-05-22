@@ -1,4 +1,6 @@
 
+
+
 var vehicles = [];
 var food = [];
 var poison = [];
@@ -26,6 +28,7 @@ function setup() {
   
   startingVeh = createSlider(0, 100, 50);
   startingVeh.parent('sVeh-holder');
+  
  
   startingPoison = createSlider(0, 40, 20);
   startingPoison.parent('sPoison-holder');
@@ -47,6 +50,9 @@ function setup() {
  
   poisonSpawnR = createSlider(0, 5, 2.5);
   poisonSpawnR.parent('pSpawnR-holder');
+
+  statistics = createP();
+  statistics.parent('stats-holder');
   
  resetButton.mousePressed(clearVars);
   resetSketch();
@@ -65,6 +71,7 @@ function resetSketch() {
     var x = random(width);
     var y = random(height);
     vehicles[i] = new Vehicle(x, y);
+    
   }
 
   //add x/y locations to food array:
@@ -136,6 +143,18 @@ function draw() {
       //remove 1 current iteration from the vehicles array:
       vehicles.splice(i, 1);
     }
+  displayStats();
+  }
+  function displayStats() {
+    var stats_text ='<br>' + "Starting Vehicles: " + startingVeh.value() + "<br>";
+  //here additional text information is added on to the stats_text variable
+    //which has the effect of appending the information rather than overwriting
+    stats_text += "Starting Food: " + startingFood.value() + "<br>";
+    stats_text += "StartingPoison: " + startingPoison.value() + "<br>";
+
+    statistics.html(stats_text);
+
+
   }
 }
 

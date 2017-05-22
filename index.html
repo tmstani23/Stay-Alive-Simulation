@@ -15,6 +15,13 @@
       width: 100%;
       justify-content: center;
       }
+    #stats-holder {
+      display:flex;
+      background-color:whitesmoke;
+      width: 20%;
+      justify-content: left;
+      text-align: left;
+      }
     #preset-holder {
       display: flex;
       background-color:darkslategrey;
@@ -35,18 +42,25 @@
       text-align: center;
       color: darkslategrey;
     }
+    h3 {
+      text-align: left;
+      color: darkslategrey;
+    }
     p {
       padding: 4px;
       color:darkred;
+      text-align: left;
     }
   </style>
 </head>
 <body>
   <h1>Stay Alive Simulation</h1>
   <div id="canvas-holder">
-  
+    <div id="stats-holder">
+    <h3>Statistics:</h3>
+    </div>
   </div>
-  <h3>Presets:</h3>
+    <h3>Presets:</h3>
   <div id='preset-holder'>
     <p id='debug-holder'>Debug on/off</p>
     

@@ -42,12 +42,12 @@ function Vehicle(x,y, dna) {
     this.dna[0] = dna[0];
     if (random(1) < mutationRate) {
       //adjust dna food weight by tiny random amount
-      this.dna[0] += random(-.01, 0.1); 
+      this.dna[0] += random(-.02, 0.2); 
     }
     this.dna[1] = dna[1];
     if (random(1) < mutationRate) {
       //adjust dna poison weight by tiny random amount
-      this.dna[1] += random(-.01, 0.1); 
+      this.dna[1] += random(-.02, 0.2); 
     }
     this.dna[2] = dna[2];
     if (random(1) < mutationRate) {
