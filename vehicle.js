@@ -1,14 +1,17 @@
 
-var mutationRate = 0.1;
-//amnt of health lost by agent per frame:
+
+//old hardcoded values:
 //var healthLoss = .005;
 //this.foodValue = 0.3;
 //this.poisonValue = -0.75;
+//this.cloneRate = 0.0025;
+//var mutationRate = 0.1;
 
 
 
 // The "Vehicle" class
 function Vehicle(x,y, dna) {
+  var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
@@ -23,7 +26,7 @@ function Vehicle(x,y, dna) {
   this.foodValue = foodValueSlider.value() / 100;
   this.poisonValue = -(poisonValueSlider.value() / 100);
   //rate at which vehicle clones itself:
-  this.cloneRate = 0.0025;
+  this.cloneRate = vCloneRSlider.value() / 1000;
 
 
   this.dna = [];
@@ -84,7 +87,7 @@ function Vehicle(x,y, dna) {
     var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //.4 is the amount subtracted from health when it eats poison
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
-    
+
     steerG.mult(this.dna[0]);
     steerB.mult(this.dna[1]);
 
@@ -93,6 +96,10 @@ function Vehicle(x,y, dna) {
   }
   //clone function creates a new vehicle randomly
   this.clone = function() {
+    //if the vehicle is healthy increase its chance to clone itself:
+    if (this.health > 0.75 && this.health < 0.9) {
+      this.cloneRate * 2;
+    }
     if (random(1) < this.cloneRate) {
       //create new vehicle with current vehicle's dna
       return new Vehicle(this.position.x, this.position.y, this.dna);
@@ -106,7 +113,7 @@ function Vehicle(x,y, dna) {
   this.eat = function(list, nutrition, perception){
     var record = Infinity;
     var closest = null;
-    //iterate through the the list input as an argument up to its length:
+    //iterate through the the list backwards:
     for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
@@ -117,13 +124,14 @@ function Vehicle(x,y, dna) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
         list.splice(i, 1);
+        //add nutrition amount to health (food or poison value):
         this.health += nutrition;
       } else {
-      
+        //if distance from veh to object < infinity and veh food/poison perception:
         if (d < record && d < perception) {
           //set record to distance
           record = d;
-          //closest = current list element
+          //closest = current list element (food or poison):
           closest = list[i];
         } 
       }
@@ -163,19 +171,19 @@ function Vehicle(x,y, dna) {
     
     //draw debug visualizations for poison/food radius and weights/headings of vehicles
     if (debug.checked()) {
-      strokeWeight(3);
-      stroke(0, 255, 0);
+      strokeWeight(4);
+      stroke(70,122,82);
       noFill();
       line(0, 0, 0, -this.dna[0] * 25);
       strokeWeight(2);
       ellipse(0,0, this.dna[2] * 2);
-      stroke(255, 0, 0);
+      stroke(107,28,28);
       line(0, 0, 0, -this.dna[1] * 25);
       ellipse(0,0, this.dna[3] * 2);
     }
     
-    var green = color(0, 255, 0);
-    var red = color(255, 0 ,0);
+    var green = color(70,122,82);
+    var red = color(107,28,28);
     //assign color between red and green and apply it to health:
     var col = lerpColor(red, green, this.health);
 
