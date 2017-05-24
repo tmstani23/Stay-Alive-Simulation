@@ -1,14 +1,17 @@
 
-var mutationRate = 0.1;
-//amnt of health lost by agent per frame:
+
+//old hardcoded values:
 //var healthLoss = .005;
 //this.foodValue = 0.3;
 //this.poisonValue = -0.75;
+//this.cloneRate = 0.0025;
+//var mutationRate = 0.1;
 
 
 
 // The "Vehicle" class
 function Vehicle(x,y, dna) {
+  var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
@@ -23,7 +26,7 @@ function Vehicle(x,y, dna) {
   this.foodValue = foodValueSlider.value() / 100;
   this.poisonValue = -(poisonValueSlider.value() / 100);
   //rate at which vehicle clones itself:
-  this.cloneRate = 0.0025;
+  this.cloneRate = vCloneRSlider.value() / 1000;
 
 
   this.dna = [];
@@ -163,19 +166,19 @@ function Vehicle(x,y, dna) {
     
     //draw debug visualizations for poison/food radius and weights/headings of vehicles
     if (debug.checked()) {
-      strokeWeight(3);
-      stroke(0, 255, 0);
+      strokeWeight(4);
+      stroke(70,122,82);
       noFill();
       line(0, 0, 0, -this.dna[0] * 25);
       strokeWeight(2);
       ellipse(0,0, this.dna[2] * 2);
-      stroke(255, 0, 0);
+      stroke(107,28,28);
       line(0, 0, 0, -this.dna[1] * 25);
       ellipse(0,0, this.dna[3] * 2);
     }
     
-    var green = color(0, 255, 0);
-    var red = color(255, 0 ,0);
+    var green = color(70,122,82);
+    var red = color(107,28,28);
     //assign color between red and green and apply it to health:
     var col = lerpColor(red, green, this.health);
 

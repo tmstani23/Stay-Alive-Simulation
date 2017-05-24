@@ -13,6 +13,8 @@ var foodSpawnR;
 var foodValueSlider;
 var poisonSpawnR;
 var healthLostSlider;
+var vCloneRSlider;
+var mutationRSlider;
 var debug;
 
 
@@ -48,8 +50,14 @@ function setup() {
   foodSpawnR = createSlider(0, 20, 10);
   foodSpawnR.parent('fSpawnR-holder');
  
-  poisonSpawnR = createSlider(0, 5, 2.5);
+  poisonSpawnR = createSlider(0, 20, 2.5);
   poisonSpawnR.parent('pSpawnR-holder');
+
+  vCloneRSlider = createSlider(0, 10, 2.5)
+  vCloneRSlider.parent('vClone-holder');
+
+  mutationRSlider = createSlider(0, 100, 10);
+  mutationRSlider.parent('mutationR-holder');
 
   statistics = createP();
   statistics.parent('stats-holder');
@@ -108,14 +116,14 @@ function draw() {
 
   //draw the food:
   for (var i = 0; i < food.length; i++) {
-    fill(0, 255, 0);
+    fill(108, 126, 99);
     noStroke();
     ellipse(food[i].x, food[i].y, 4, 4);
   }
 
   //draw the poison:
   for (var i = 0; i < poison.length; i++) {
-    fill(255, 0, 0);
+    fill(107,28,28);
     noStroke();
     ellipse(poison[i].x, poison[i].y, 4, 4);
   }
@@ -151,6 +159,14 @@ function draw() {
     //which has the effect of appending the information rather than overwriting
     stats_text += "Starting Food: " + startingFood.value() + "<br>";
     stats_text += "StartingPoison: " + startingPoison.value() + "<br>";
+    stats_text += "Food Value: " + foodValueSlider.value() + "<br>";
+    stats_text += "Poison Value: " + poisonValueSlider.value() + "<br>";
+    stats_text += "Health Degradation Rate: " + healthLostSlider.value() / 100 + '%' + "<br>";
+    stats_text += "Food Spawn Rate: " + foodSpawnR.value() / 100 + '%' + "<br>";
+    stats_text += "Poison Spawn Rate: " + poisonSpawnR.value() / 100 + '%' + "<br>";
+    stats_text += "Vehicle Clone Rate: " + vCloneRSlider.value() / 100 + "%" + "<br>";
+    stats_text += "Vehicle Mutation Rate: " + mutationRSlider.value() + "%" + "<br>";
+    
 
     statistics.html(stats_text);
 
