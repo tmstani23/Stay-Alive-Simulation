@@ -1,6 +1,6 @@
 
 
-
+var looping = false;
 var vehicles = [];
 var food = [];
 var poison = [];
@@ -19,7 +19,7 @@ var debug;
 
 
 function setup() {
-
+  frameRate(30);
   var canvas = createCanvas(640, 360);
   canvas.parent('canvas-holder');
   debug = createCheckbox();
@@ -32,10 +32,10 @@ function setup() {
   startingVeh.parent('sVeh-holder');
   
  
-  startingPoison = createSlider(0, 40, 20);
+  startingPoison = createSlider(0, 100, 20);
   startingPoison.parent('sPoison-holder');
  
-  startingFood = createSlider(0, 80, 40);
+  startingFood = createSlider(0, 100, 40);
   startingFood.parent('sFood-holder');
  
   foodValueSlider = createSlider(0, 100, 25);
@@ -97,9 +97,11 @@ function resetSketch() {
   }
 }
 
-function draw() {
-  background(51);
 
+function draw() {
+  
+  background(76, 76, 76);
+  
   //every once in a while add new food at random location
   if (random(1) < foodSpawnR.value() / 100) {
     var x = random(width);
@@ -153,6 +155,7 @@ function draw() {
     }
   displayStats();
   }
+  
   function displayStats() {
     var stats_text ='<br>' + "Starting Vehicles: " + startingVeh.value() + "<br>";
   //here additional text information is added on to the stats_text variable
@@ -169,11 +172,21 @@ function draw() {
     
 
     statistics.html(stats_text);
-
-
   }
 }
-
-
+//pause function:
+function keyPressed (){
+  //if p key is pressed:
+  if (keyCode == 80){
+    looping = !looping
+    //stop draw loop
+    if (looping == true) {
+      noLoop();
+    }
+    else {
+      loop();
+    }
+  }
+}
 
 

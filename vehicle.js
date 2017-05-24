@@ -87,7 +87,7 @@ function Vehicle(x,y, dna) {
     var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //.4 is the amount subtracted from health when it eats poison
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
-    
+
     steerG.mult(this.dna[0]);
     steerB.mult(this.dna[1]);
 
@@ -96,6 +96,10 @@ function Vehicle(x,y, dna) {
   }
   //clone function creates a new vehicle randomly
   this.clone = function() {
+    //if the vehicle is healthy increase its chance to clone itself:
+    if (this.health > 0.75 && this.health < 0.9) {
+      this.cloneRate * 2;
+    }
     if (random(1) < this.cloneRate) {
       //create new vehicle with current vehicle's dna
       return new Vehicle(this.position.x, this.position.y, this.dna);
@@ -109,7 +113,7 @@ function Vehicle(x,y, dna) {
   this.eat = function(list, nutrition, perception){
     var record = Infinity;
     var closest = null;
-    //iterate through the the list input as an argument up to its length:
+    //iterate through the the list backwards:
     for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
@@ -120,13 +124,14 @@ function Vehicle(x,y, dna) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
         list.splice(i, 1);
+        //add nutrition amount to health (food or poison value):
         this.health += nutrition;
       } else {
-      
+        //if distance from veh to object < infinity and veh food/poison perception:
         if (d < record && d < perception) {
           //set record to distance
           record = d;
-          //closest = current list element
+          //closest = current list element (food or poison):
           closest = list[i];
         } 
       }
