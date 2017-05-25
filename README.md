@@ -22,4 +22,4 @@ There is also a chance they will clone themselves and retain the same dna values
 Screenshot:
 
 
-![Alt text](https://github.com/tmstani23/Stay-Alive-Simulation/blob/Development/scrn1.jpg
+![Alt text]Stay-Alive-Simulation/scrn1.jpg
