@@ -11,6 +11,7 @@ var startingPoison;
 var foodMax = 150;
 var poisonMax = 150;
 
+
 //food/poison spawn rates:
 var foodSpawnR;
 var foodValueSlider;
@@ -65,7 +66,7 @@ function setup() {
   statistics = createP();
   statistics.parent('stats-holder');
   
- resetButton.mousePressed(clearVars);
+  resetButton.mousePressed(clearVars);
   resetSketch();
 }
 

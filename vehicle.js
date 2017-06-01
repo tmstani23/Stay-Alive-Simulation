@@ -18,7 +18,7 @@ function Vehicle(x,y, dna) {
   this.position = createVector(x,y);
   //vehicle radius, governs size:
   this.r = 4;
-  this.maxspeed = 4;
+  this.maxspeed = 0;
   this.maxforce = 0.1;
   this.health = 1;
  
@@ -40,6 +40,8 @@ function Vehicle(x,y, dna) {
     this.dna[2] = random(10, 100);
     //Poison perception radius
     this.dna[3] = random(10, 100);
+    //Innate speed range:
+    this.dna[4] = random(1, 10);
   } else {
     //Mutation:
     this.dna[0] = dna[0];
@@ -62,7 +64,13 @@ function Vehicle(x,y, dna) {
       //adjust dna poison perception by tiny random amount
       this.dna[3] += random(-10, 10); 
     }
+    this.dna[4] = dna[4];
+    if (random(1) < mutationRate) {
+      //adjust dna speed range by tiny random amount
+      this.dna[4] += random(-2, 3);  
+    } 
   }
+
 
   // Method to update location health velocity speed and position:
   this.update = function() {
@@ -70,9 +78,11 @@ function Vehicle(x,y, dna) {
     this.health -= healthLoss;
     // Update velocity
     this.velocity.add(this.acceleration);
-    // Limit speed
+    // Limit speed by dna speed weight:
+    this.maxspeed = this.dna[4];
     this.velocity.limit(this.maxspeed);
     this.position.add(this.velocity);
+
     // Reset acceleration to 0 each cycle
     this.acceleration.mult(0);
   };
@@ -123,7 +133,7 @@ function Vehicle(x,y, dna) {
       var d = this.position.dist(list[i]);
       
       //eating occurs here:
-      if (d < this.maxspeed) {
+      if (d < 4) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
         list.splice(i, 1);
@@ -183,6 +193,8 @@ function Vehicle(x,y, dna) {
       stroke(107,28,28);
       line(0, 0, 0, -this.dna[1] * 25);
       ellipse(0,0, this.dna[3] * 2);
+      stroke(100, 100, 100);
+      ellipse(0, 0, this.dna[4] * 10);
     }
     
     var green = color(70,122,82);
