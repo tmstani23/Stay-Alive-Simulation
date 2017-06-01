@@ -8,6 +8,10 @@ var poison = [];
 var startingVeh;
 var startingFood;
 var startingPoison;
+var foodMax = 150;
+var poisonMax = 150;
+
+
 //food/poison spawn rates:
 var foodSpawnR;
 var foodValueSlider;
@@ -62,7 +66,7 @@ function setup() {
   statistics = createP();
   statistics.parent('stats-holder');
   
- resetButton.mousePressed(clearVars);
+  resetButton.mousePressed(clearVars);
   resetSketch();
 }
 
@@ -93,7 +97,6 @@ function resetSketch() {
   for (var i = 0; i < startingPoison.value(); i++) {
     var x = random(width);
     var y = random(height);
-    poison.push(createVector(x, y));
   }
 }
 
@@ -106,14 +109,18 @@ function draw() {
   if (random(1) < foodSpawnR.value() / 100) {
     var x = random(width);
     var y = random(height);
-    food.push(createVector(x, y));
+    if (food.length <= foodMax) {
+      food.push(createVector(x, y));
+    }
   }
 
   //every once in a while add new poison at random location
   if (random(1) < poisonSpawnR.value() / 100) {
     var x = random(width);
     var y = random(height);
-    poison.push(createVector(x, y));
+    if (poison.length <= poisonMax) {
+      poison.push(createVector(x, y));
+    }
   }
 
   //draw the food:
