@@ -1,15 +1,16 @@
 
-
 var looping = false;
 var vehicles = [];
 var food = [];
 var poison = [];
+var predContainer = [];
 //amounts at beginning of simulation:
 var startingVeh;
 var startingFood;
 var startingPoison;
 var foodMax = 150;
 var poisonMax = 150;
+var startingPreds = 50;
 
 
 //food/poison spawn rates:
@@ -23,6 +24,7 @@ var debug;
 
 
 function setup() {
+  
   frameRate(30);
   var canvas = createCanvas(640, 360);
   canvas.parent('canvas-holder');
@@ -74,16 +76,36 @@ function clearVars() {
   vehicles = [];
   food = [];
   poison = [];
+  //old code: predContainer = [];
   resetSketch();
 }
 
 function resetSketch() {
-  for (var i = 0; i < startingVeh.value(); i++) {
-    //create a new vehicles at random locations on the canvas:
+  
+  //Old code:
+  // for (var i = 0; i < startingVeh.value(); i++) {
+  //   var x = random(width);
+  //   var y = random(height);
+  //   var pred = false;
+  //   if (i < startingPreds) {
+  //     //add predator vehicles on the canvas:
+  //     pred = true;
+  //     predContainer.push(pred);
+  //     //print(pred);
+  //   }
+  //   else {
+  //     pred = false;
+  //     predContainer.push(pred);
+  //   }
+  // }
+  //create a new vehicles at random locations on the canvas:
+  for (var i = startingVeh.value() - 1; i >= 0; i--) {
     var x = random(width);
     var y = random(height);
-    vehicles[i] = new Vehicle(x, y);
-    
+    vehicles[i] = new Vehicle(x, y, dna = undefined);
+    //old code:
+    // vehicles[i] = new Vehicle(x, y, predContainer[i], dna = undefined);
+    // //print(predContainer[i]);
   }
 
   //add x/y locations to food array:
@@ -97,9 +119,10 @@ function resetSketch() {
   for (var i = 0; i < startingPoison.value(); i++) {
     var x = random(width);
     var y = random(height);
+    poison.push(createVector(x, y));
   }
+  
 }
-
 
 function draw() {
   
@@ -141,10 +164,12 @@ function draw() {
   //iterate through vehicles array backwards and call functions on each vehicle
   //backwards to avoid issues with deleted elements within the array
   for (var i = vehicles.length - 1; i >= 0; i--) {
+    
     vehicles[i].boundaries();
     vehicles[i].behaviors(food, poison);
     vehicles[i].update();
     vehicles[i].display();
+    
 
     //add new clone to vehicles array
     var newVehicle = vehicles[i].clone();

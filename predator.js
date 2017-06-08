@@ -1,16 +1,4 @@
-
-
-//old hardcoded values:
-//var healthLoss = .005;
-//this.foodValue = 0.3;
-//this.poisonValue = -0.75;
-//this.cloneRate = 0.0025;
-//var mutationRate = 0.1;
-
-
-
-// The "Vehicle" class
-function Vehicle(x, y, pred, dna) {
+function Predator(x, y, pred, dna) {
   var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000;
    
@@ -31,7 +19,6 @@ function Vehicle(x, y, pred, dna) {
   this.cloneRate = vCloneRSlider.value() / 1000;
   this.dna = [];
   //pred is an argument of the Vehicle class
-
 
   if (dna == undefined) {
     //Food weight:
@@ -72,27 +59,7 @@ function Vehicle(x, y, pred, dna) {
       this.dna[4] += random(-2, 3);  
     } 
   }
-   
-  // this.steerGood = function(pred, prey) {
-  //   this.pred = pred;
-  //   for (var i = 0; i < pred.length; i++) {
-      
-  //     if (this.pred[i] = "true") {
-  //     //   // steer toward food based on food perception in dna and eat
-  //       print("pred behaviorsf");
-  //       var steerG = this.eat(prey[i].position, this.foodValue, this.dna[2]);
-  //       return steerG;
-  //       }
-  //     if (this.pred[i] = "false") {
-  //       print("vehicle behaviorsf");
-  //         // steer toward food based on food perception in dna and eat
-  //       return steerG = this.eat(good, this.foodValue, this.dna[2]);
-  //     }
-  //   }
-  // }
-   
-  
-  // Method to update location health velocity speed and position:
+
   this.update = function() {
     
     //vehicles lose a little health each frame:
@@ -108,57 +75,49 @@ function Vehicle(x, y, pred, dna) {
     this.acceleration.mult(0);
   };
 
- 
   this.behaviors = function(good, bad, prey) {
     
-    // //this.steerGood(pred, prey);
-    // this.pred = pred;
-    // for (var i = 0; i < pred.length; i++) {
+    //this.steerGood(pred, prey);
+    this.pred = pred;
+    for (var i = 0; i < pred.length; i++) {
       
-    //   if (this.pred[i] = "true") {
-    //   //   // steer toward food based on food perception in dna and eat
-    //     //print("pred behaviorsf");
-    //     //print(prey[i].position);
-    //     var steerP = this.eat(prey[i].position.x + prey[i].position.x, this.foodValue, this.dna[2]);
-    //     this.predator = true;
-    //     }
-    // //   if (this.pred[i] = "false") {
-    // //    // print("vehicle behaviorsf");
-    // //       // steer toward food based on food perception in dna and eat
-    // //     var steerG = this.eat(good, this.foodValue, this.dna[2]);
-    // //   }
-    // }
-  
-   
-   
-    
+      if (this.pred[i] = "true") {
+      //   // steer toward food based on food perception in dna and eat
+        //print("pred behaviorsf");
+        //print(prey[i].position);
+        var steerP = this.eat(prey[i].position.x + prey[i].position.x, this.foodValue, this.dna[2]);
+        this.predator = true;
+        }
+    //   if (this.pred[i] = "false") {
+    //    // print("vehicle behaviorsf");
+    //       // steer toward food based on food perception in dna and eat
+    //     var steerG = this.eat(good, this.foodValue, this.dna[2]);
+    //   }
+    }
     var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
-    
-    //old code:
-    // if (steerP != undefined) {
-    //   steerP.mult(this.dna[0]);
-    //   //print('working');
-    // }
     //multiply the steering force by food weight value:
+    if (steerP != undefined) {
+      steerP.mult(this.dna[0]);
+      //print('working');
+    }
+    
     steerG.mult(this.dna[0]);
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
     this.applyForce(steerG);
     this.applyForce(steerB);
-    //old code:
-    //this.applyForce(steerP);
+    this.applyForce(steerP);
     
-  };
+  }
 
   this.applyForce = function(force) {
     // We could add mass here if we want A = F / M
     this.acceleration.add(force);
   };
 
-  //clone function creates a new vehicle randomly
   this.clone = function() {
     //if the vehicle is healthy increase its chance to clone itself:
     if (this.health > 0.75 && this.health < 0.9) {
@@ -172,8 +131,6 @@ function Vehicle(x, y, pred, dna) {
     }
   };
 
-
-  //eat function
   this.eat = function(list, nutrition, perception){
     var record = Infinity;
     var closest = null;
@@ -212,8 +169,6 @@ function Vehicle(x, y, pred, dna) {
   return createVector(0, 0);
   };
 
-  // A method that calculates a steering force towards a target
-  // STEER = DESIRED MINUS VELOCITY
   this.seek = function(target) {
     var desired = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
     //Set maximum speed:
@@ -224,7 +179,6 @@ function Vehicle(x, y, pred, dna) {
     return steer;
   };
 
-  //function that returns True if the vehicle is dead
   this.dead = function() {
     return (this.health < 0);
   };
@@ -269,21 +223,19 @@ function Vehicle(x, y, pred, dna) {
     vertex(this.r, this.r*2);
     endShape(CLOSE);
     pop();
-    // old code:
-    // if (this.predator = true) {
-    //   fill(pCol);
-    //   stroke(pCol);
-    //   strokeWeight(1);
-    //   stroke(255);
-    //   beginShape();
-    //   vertex(0, -this.r*2);
-    //   vertex(-this.r, this.r*2);
-    //   vertex(this.r, this.r*2);
-    //   endShape(CLOSE);
-    //   pop();
-    // }
-    
-    
+
+    if (this.predator = true) {
+      fill(pCol);
+      stroke(pCol);
+      strokeWeight(1);
+      stroke(255);
+      beginShape();
+      vertex(0, -this.r*2);
+      vertex(-this.r, this.r*2);
+      vertex(this.r, this.r*2);
+      endShape(CLOSE);
+      pop();
+    }
   };
 
   this.boundaries = function() {
@@ -312,4 +264,5 @@ function Vehicle(x, y, pred, dna) {
       this.applyForce(steer);
     }
   };
+
 }
