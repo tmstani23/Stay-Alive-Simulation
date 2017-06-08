@@ -3,14 +3,15 @@ var looping = false;
 var vehicles = [];
 var food = [];
 var poison = [];
-var predContainer = [];
+var predators = [];
+
 //amounts at beginning of simulation:
 var startingVeh;
 var startingFood;
 var startingPoison;
 var foodMax = 150;
 var poisonMax = 150;
-var startingPreds = 50;
+var startingPreds = 20;
 
 
 //food/poison spawn rates:
@@ -76,38 +77,25 @@ function clearVars() {
   vehicles = [];
   food = [];
   poison = [];
-  //old code: predContainer = [];
+  predators = [];
+  
   resetSketch();
 }
 
 function resetSketch() {
-  
-  //Old code:
-  // for (var i = 0; i < startingVeh.value(); i++) {
-  //   var x = random(width);
-  //   var y = random(height);
-  //   var pred = false;
-  //   if (i < startingPreds) {
-  //     //add predator vehicles on the canvas:
-  //     pred = true;
-  //     predContainer.push(pred);
-  //     //print(pred);
-  //   }
-  //   else {
-  //     pred = false;
-  //     predContainer.push(pred);
-  //   }
-  // }
+
   //create a new vehicles at random locations on the canvas:
-  for (var i = startingVeh.value() - 1; i >= 0; i--) {
+  for (var i = 0; i < startingVeh.value(); i++) {
     var x = random(width);
     var y = random(height);
     vehicles[i] = new Vehicle(x, y, dna = undefined);
-    //old code:
-    // vehicles[i] = new Vehicle(x, y, predContainer[i], dna = undefined);
-    // //print(predContainer[i]);
   }
-
+  //create a new predators at random locations on the canvas:
+  for (var i = 0; i < startingPreds; i++) {
+    var x = random(width);
+    var y = random(height);
+    predators[i] = new Predator(x, y, dna = undefined);
+  }
   //add x/y locations to food array:
   for (var i = 0; i < startingFood.value(); i++) {
     var x = random(width);
@@ -170,7 +158,6 @@ function draw() {
     vehicles[i].update();
     vehicles[i].display();
     
-
     //add new clone to vehicles array
     var newVehicle = vehicles[i].clone();
     if (newVehicle != null) {
@@ -185,8 +172,36 @@ function draw() {
       //remove 1 current iteration from the vehicles array:
       vehicles.splice(i, 1);
     }
+  
+  //displayStats();
+  }
+
+  for (var i = predators.length - 1; i >= 0; i--) {
+    
+    predators[i].boundaries();
+    predators[i].behaviors(food, poison, vehicles);
+    predators[i].update();
+    predators[i].display();
+    
+
+    //add new clone to vehicles array
+    var newPredator = predators[i].clone();
+    if (newPredator != null) {
+      predators.push(newPredator);
+    }
+    //delete vehicle from array if dead
+    if (predators[i].dead()) {
+      //add one food element where vehicle died
+      var x = predators[i].position.x;
+      var y = predators[i].position.y;
+      //food.push(createVector(x, y));
+      //remove 1 current iteration from the vehicles array:
+      predators.splice(i, 1);
+    }
+  
   displayStats();
   }
+  
   
   function displayStats() {
     var stats_text ='<br>' + "Starting Vehicles: " + startingVeh.value() + "<br>";
