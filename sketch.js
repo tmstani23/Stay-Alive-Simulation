@@ -7,11 +7,11 @@ var predators = [];
 
 //amounts at beginning of simulation:
 var startingVeh;
+var startingPreds;
 var startingFood;
 var startingPoison;
 var foodMax = 150;
 var poisonMax = 150;
-var startingPreds = 20;
 
 
 //food/poison spawn rates:
@@ -21,16 +21,26 @@ var poisonSpawnR;
 var healthLostSlider;
 var vCloneRSlider;
 var mutationRSlider;
+var pCloneRSlider;
+var pMutationRSlider;
+var extinctCheckbox;
+var omnivoreCheckbox;
 var debug;
 
 
 function setup() {
   
   frameRate(30);
-  var canvas = createCanvas(640, 360);
+  var canvas = createCanvas(880, 360);
   canvas.parent('canvas-holder');
   debug = createCheckbox();
   debug.parent('debug-holder');
+
+  extinctCheckbox = createCheckbox();
+  extinctCheckbox.parent('extinct-holder');
+  
+  omnivoreCheckbox = createCheckbox();
+  omnivoreCheckbox.parent('omniCheck-holder');
   
   var resetButton = createButton("reset");
   resetButton.parent('reset-holder');
@@ -38,6 +48,8 @@ function setup() {
   startingVeh = createSlider(0, 100, 50);
   startingVeh.parent('sVeh-holder');
   
+  startingPreds = createSlider(0, 100, 25);
+  startingPreds.parent('sPred-holder');
  
   startingPoison = createSlider(0, 100, 20);
   startingPoison.parent('sPoison-holder');
@@ -47,12 +59,22 @@ function setup() {
  
   foodValueSlider = createSlider(0, 100, 25);
   foodValueSlider.parent('foodV-holder');
+
+  pFoodValueSlider = createSlider(0, 125, 25);
+  pFoodValueSlider.parent('pFoodV-holder');
   
   poisonValueSlider = createSlider(0, 100, 75);
   poisonValueSlider.parent('poisonV-holder');
 
+  pPoisonValueSlider = createSlider(0, 100, 75);
+  pPoisonValueSlider.parent('pPoisonV-holder');
+
   healthLostSlider = createSlider(0, 10, 5);
   healthLostSlider.parent('hLost-holder');
+
+  predHLostSlider = createSlider(0, 10, 5);
+  predHLostSlider.parent('predHLost-holder');
+   
   
   foodSpawnR = createSlider(0, 20, 10);
   foodSpawnR.parent('fSpawnR-holder');
@@ -65,6 +87,12 @@ function setup() {
 
   mutationRSlider = createSlider(0, 100, 10);
   mutationRSlider.parent('mutationR-holder');
+
+  pCloneRSlider = createSlider(0, 10, 2.5)
+  pCloneRSlider.parent('pClone-holder');
+
+  pMutationRSlider = createSlider(0, 100, 10);
+  pMutationRSlider.parent('pMutationR-holder');
 
   statistics = createP();
   statistics.parent('stats-holder');
@@ -91,7 +119,7 @@ function resetSketch() {
     vehicles[i] = new Vehicle(x, y, dna = undefined);
   }
   //create a new predators at random locations on the canvas:
-  for (var i = 0; i < startingPreds; i++) {
+  for (var i = 0; i < startingPreds.value(); i++) {
     var x = random(width);
     var y = random(height);
     predators[i] = new Predator(x, y, dna = undefined);
@@ -133,7 +161,24 @@ function draw() {
       poison.push(createVector(x, y));
     }
   }
-
+  
+  if (extinctCheckbox.checked()) {
+    //every once in a while create new vehicle at random location
+    if (random(1) < mutationRSlider.value()/1000) {
+      var x = random(width);
+      var y = random(height);
+      var randomVehicle = new Vehicle(x, y, dna = undefined)
+      vehicles.push(randomVehicle);
+    }
+    //everyone once in a while create new predator spawns at random location
+    if (random(1) < mutationRSlider.value()/1000) {
+      var x = random(width);
+      var y = random(height);
+      var randomPredator = new Predator(x, y, dna = undefined)
+      predators.push(randomPredator);
+    }
+  }
+  
   //draw the food:
   for (var i = 0; i < food.length; i++) {
     fill(108, 126, 99);
@@ -194,7 +239,7 @@ function draw() {
       //add one food element where vehicle died
       var x = predators[i].position.x;
       var y = predators[i].position.y;
-      //food.push(createVector(x, y));
+      food.push(createVector(x, y));
       //remove 1 current iteration from the vehicles array:
       predators.splice(i, 1);
     }
@@ -207,15 +252,21 @@ function draw() {
     var stats_text ='<br>' + "Starting Vehicles: " + startingVeh.value() + "<br>";
   //here additional text information is added on to the stats_text variable
     //which has the effect of appending the information rather than overwriting
+    stats_text += "Starting Predators: " + startingPreds.value() + "<br>";
     stats_text += "Starting Food: " + startingFood.value() + "<br>";
-    stats_text += "StartingPoison: " + startingPoison.value() + "<br>";
-    stats_text += "Food Value: " + foodValueSlider.value() + "<br>";
-    stats_text += "Poison Value: " + poisonValueSlider.value() + "<br>";
-    stats_text += "Health Degradation Rate: " + healthLostSlider.value() / 100 + '%' + "<br>";
+    stats_text += "Starting Poison: " + startingPoison.value() + "<br>";
+    stats_text += "Prey Food Value: " + foodValueSlider.value() + "<br>";
+    stats_text += "Predator Food Value: " + pFoodValueSlider.value() + "<br>";
+    stats_text += "Prey Poison Value: " + poisonValueSlider.value() + "<br>";
+    stats_text += "Predator Poison Value: " + pPoisonValueSlider.value() + "<br>";
+    stats_text += "Vehicle Health Degradation Rate: " + healthLostSlider.value() / 100 + '%' + "<br>";
+    stats_text += "Predator Health Degradation Rate: " + predHLostSlider.value() / 100 + '%' + "<br>";
     stats_text += "Food Spawn Rate: " + foodSpawnR.value() / 100 + '%' + "<br>";
     stats_text += "Poison Spawn Rate: " + poisonSpawnR.value() / 100 + '%' + "<br>";
     stats_text += "Vehicle Clone Rate: " + vCloneRSlider.value() / 100 + "%" + "<br>";
     stats_text += "Vehicle Mutation Rate: " + mutationRSlider.value() + "%" + "<br>";
+    stats_text += "Predator Clone Rate: " + pCloneRSlider.value() / 100 + "%" + "<br>";
+    stats_text += "Predator Mutation Rate: " + pMutationRSlider.value() + "%" + "<br>";
     
 
     statistics.html(stats_text);
