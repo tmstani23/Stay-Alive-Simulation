@@ -1,19 +1,9 @@
 
 
-//old hardcoded values:
-//var healthLoss = .005;
-//this.foodValue = 0.3;
-//this.poisonValue = -0.75;
-//this.cloneRate = 0.0025;
-//var mutationRate = 0.1;
-
-
-
-// The "Vehicle" class
-function Vehicle(x, y, dna) {
+function Predator(x, y, dna) {
   var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000;
-  var predPos = ""; 
+  var preyPos = ""; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -22,26 +12,26 @@ function Vehicle(x, y, dna) {
   this.maxspeed = 0;
   this.maxforce = 0.1;
   this.health = 1;
+  
   //amnt gain/lost to health from food/poison:
   this.foodValue = foodValueSlider.value() / 100;
   this.poisonValue = -(poisonValueSlider.value() / 100);
   //rate at which vehicle clones itself:
   this.cloneRate = vCloneRSlider.value() / 1000;
   this.dna = [];
-  
-
+  //pred is an argument of the Vehicle class
 
   if (dna == undefined) {
     //Food weight:
-    this.dna[0] = random(-2, 2);
+    this.dna[0] = random(-3, 3);
     //Poison weight:
-    this.dna[1] = random(-2, 2);
+    this.dna[1] = random(-1, 1);
     //Food perception radius
     this.dna[2] = random(10, 100);
     //Poison perception radius
     this.dna[3] = random(10, 100);
     //Innate speed range:
-    this.dna[4] = random(1, 10);
+    this.dna[4] = random(1, 15);
   } else {
     //Mutation:
     this.dna[0] = dna[0];
@@ -70,8 +60,7 @@ function Vehicle(x, y, dna) {
       this.dna[4] += random(-2, 3);  
     } 
   }
-  
-  // Method to update location health velocity speed and position:
+
   this.update = function() {
     
     //vehicles lose a little health each frame:
@@ -87,34 +76,37 @@ function Vehicle(x, y, dna) {
     this.acceleration.mult(0);
   };
 
- 
-  this.behaviors = function(good, bad, predators) {
-  
-   
-   
-    var steerP = this.eat(predators, this.poisonValue, this.dna[3]);
-    var steerG = this.eat(good, this.foodValue, this.dna[2]);
+  this.behaviors = function(good, bad, prey) {
+    
+      //   // steer toward food based on food perception in dna and eat
+    //Add a for statement here that cycles through vehicles array and returns i    
+    var steerP = this.eat(prey, this.foodValue, this.dna[2]);
+    if (prey.length <= 5) {
+      var steerP = this.eat(good, this.foodValue, this.dna[2]);
+      print("no more prey!")
+    }
+    //var steerG = this.eat(good, this.foodValue, this.dna[2])
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
+    //multiply the steering force by food weight value:
     
-    steerG.mult(this.dna[0]);
     steerP.mult(this.dna[0]);
+    //steerG.mult(this.dna[0]);
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
-    this.applyForce(steerG);
     this.applyForce(steerP);
+    //this.applyForce(steerG);
     this.applyForce(steerB);
-   
     
-  };
+    
+  }
 
   this.applyForce = function(force) {
     // We could add mass here if we want A = F / M
     this.acceleration.add(force);
   };
 
-  //clone function creates a new vehicle randomly
   this.clone = function() {
     //if the vehicle is healthy increase its chance to clone itself:
     if (this.health > 0.75 && this.health < 0.9) {
@@ -122,14 +114,12 @@ function Vehicle(x, y, dna) {
     }
     if (random(1) < this.cloneRate) {
       //create new vehicle with current vehicle's dna
-      return new Vehicle(this.position.x, this.position.y, this.dna);
+      return new Predator(this.position.x, this.position.y, this.dna);
     } else {
         return null;
     }
   };
 
-
-  //eat function
   this.eat = function(list, nutrition, perception){
     var record = Infinity;
     var closest = null;
@@ -137,25 +127,25 @@ function Vehicle(x, y, dna) {
     for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
-      if (list == predators) {
+      if (list == vehicles) {
         
-        try {
-          predPos = list[i].position;
+      try {
+          preyPos = list[i].position;
         }
         catch(err) {
-        print(err.message)
+        //print(err.message)
         }
       }
       else {
-        predPos = list[i];
+        preyPos = list[i];
       }
-      var d = this.position.dist(predPos);
-      //print(list);
+      var d = this.position.dist(preyPos);
       
       //eating occurs here:
       if (d < 4) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
+        
         list.splice(i, 1);
         //add nutrition amount to health (food or poison value):
         this.health += nutrition;
@@ -166,8 +156,8 @@ function Vehicle(x, y, dna) {
           //set record to distance
           record = d;
           //closest = current list element (food or poison):
-          if (list == predators) {
-            closest = predPos;
+          if (list == vehicles) {
+            closest = preyPos;
           } 
           else {
             closest = list[i];
@@ -184,10 +174,10 @@ function Vehicle(x, y, dna) {
   return createVector(0, 0);
   };
 
-  // A method that calculates a steering force towards a target
-  // STEER = DESIRED MINUS VELOCITY
   this.seek = function(target) {
-    var desired = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
+    
+    var desired =  p5.Vector.sub(target,this.position);
+    
     //Set maximum speed:
     desired.setMag(this.maxspeed);
     // Steering = Desired minus Velocity
@@ -196,7 +186,6 @@ function Vehicle(x, y, dna) {
     return steer;
   };
 
-  //function that returns True if the vehicle is dead
   this.dead = function() {
     return (this.health < 0);
   };
@@ -228,34 +217,20 @@ function Vehicle(x, y, dna) {
     var green = color(70,122,82);
     var red = color(107,28,28);
     //assign color between red and green and apply it to health:
-    var col = lerpColor(red, green, this.health);
-    var pCol = white;
+    var col = lerpColor(white, black, this.health);
+    
 
     fill(col);
     stroke(col);
     strokeWeight(1);
     stroke(255);
     beginShape();
-    vertex(0, -this.r*2);
-    vertex(-this.r, this.r*2);
-    vertex(this.r, this.r*2);
+    vertex(0, -this.r*4);
+    vertex(-this.r, this.r*4);
+    vertex(this.r, this.r*4);
     endShape(CLOSE);
     pop();
-    // old code:
-    // if (this.predator = true) {
-    //   fill(pCol);
-    //   stroke(pCol);
-    //   strokeWeight(1);
-    //   stroke(255);
-    //   beginShape();
-    //   vertex(0, -this.r*2);
-    //   vertex(-this.r, this.r*2);
-    //   vertex(this.r, this.r*2);
-    //   endShape(CLOSE);
-    //   pop();
-    // }
-    
-    
+
   };
 
   this.boundaries = function() {
@@ -284,4 +259,5 @@ function Vehicle(x, y, dna) {
       this.applyForce(steer);
     }
   };
+
 }
