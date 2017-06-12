@@ -22,6 +22,7 @@
       display:flex;
       width: 50%;
       justify-content: left;
+      justify-content: space-around;
       text-align: left;
       }
     #preset-holder {
@@ -31,6 +32,7 @@
       border-color:rgb(236,209,167);
       width: 100%;
       justify-content: center;
+      justify-content: space-around;
       align-items: center;
       text-align: center;
     }
@@ -41,6 +43,30 @@
       border-color:rgb(236,209,167);
       width: 100%;
       justify-content: center;
+      justify-content: space-around;
+      align-items: left;
+      text-align: center;
+     
+    }
+    #vVariables-holder {
+      display: flex;
+      background-color:rgb(166,186,189);
+      border: 4px outset;
+      border-color:rgb(236,209,167);
+      width: 100%;
+      justify-content: center;
+      justify-content: space-around;
+      align-items: center;
+      text-align: center;
+    }
+    #pVariables-holder {
+      display: flex;
+      background-color:rgb(166,186,189);
+      border: 4px outset;
+      border-color:rgb(236,209,167);
+      width: 100%;
+      justify-content: center;
+      justify-content: space-around;
       align-items: center;
       text-align: center;
     }
@@ -66,42 +92,52 @@
     <h3>Statistics:</h3>
     </div>
   </div>
-    <h3>Presets:</h3>
+  <h3>Presets:</h3>
   <div id='preset-holder'>
-    
-    
     <p id='reset-holder'>Reset with current settings:  </p>
-    
     <p id='sVeh-holder'>Number of starting vehicles:  </p>
     <p id='sPred-holder'>Number of starting predators:  </p>
     <p id='sPoison-holder'>Amount of poison at start:  </p>
     <p id='sFood-holder'>Amount of food at start:  </p>
-    <p id='foodV-holder'>Value food adds to prey health:  </p>
-    <p id='pFoodV-holder'>Value food adds to predator health:  </p>
-    <p id='poisonV-holder'>Value poison subtracts from prey health:  </p>
-    <p id='pPoisonV-holder'>Value poison subtracts from predator health:  </p>
   </div>
   <h3>While running:</h3>
   <div id='whileRun-holder'>
-    <p id='debug-holder'>Debug on/off</p>
-    <p id='hLost-holder'>Vehicle health loss per frame:  </p>
+    <p id='debug-holder'>Debug on/off:  </p>
+    <p id='extinct-holder'>Extinction Mode on/off:  </p>
+    <p id='omniCheck-holder'>Omnivore Mode on/off:  </p>
     <p id='fSpawnR-holder'>Food Spawn Rate:  </p>
     <p id='pSpawnR-holder'>Poison Spawn Rate:  </p>
+  </div>
+  <h3>Vehicle Specific Variables</h3>
+  <div id='vVariables-holder'>
+    <p id='hLost-holder'>Vehicle health loss per frame:  </p>
+    <p id='foodV-holder'>Value food adds to prey health:  </p>
+    <p id='poisonV-holder'>Value poison subtracts from prey health:  </p>
     <p id='vClone-holder'>Vehicle Clone Rate:  </p>
     <p id='mutationR-holder'>Vehicle Mutation Rate:  </p>
+  </div>
+  <h3>Predator Specific Variables</h3>
+  <div id='pVariables-holder'>
+    <p id='predHLost-holder'>Predator health loss per frame:  </p>
+    <p id='pFoodV-holder'>Value food adds to predator health:  </p>
+    <p id='pPoisonV-holder'>Value poison subtracts from predator health:  </p>
+    <p id='pClone-holder'>Predator Clone Rate:  </p>
+    <p id='pMutationR-holder'>Predator Mutation Rate:  </p>
   </div>
   <h3>Notes:</h3>
   <div id='notes-holder'>
     <p>Press 'p' key to pause</p>
+    <p>Vehicles are small triangles and predators are the larger.</p>
     <p> Debug Menu Key: <br>
         The green circle, around each vehicle, is food perception radius. <br>
         The red circle is poison perception. <br>
         The grey circle is vehicle speed. <br>
-        The green line is food weight and red line is poison weight
+        The green line is food weight and red line is poison weight.
     </p>
-    <p>All vehicles with higher health have twice the chance of cloning themselves.</p>
-    <p>Predators have half the health loss rate.</p>
-    <p>Simulation created by Timothy Stanislav; Indoorkin Productions</p>
+    <p>If extinction mode is checked vehicles and predators will spawn at random.  </p>
+    <p>If omnivore mode is checked predators will eat food and vehicles.  </p>
+    <p>All vehicles with above 75% health have twice the chance of cloning themselves.</p>
+    <p>Simulation created by Timothy Stanislav; Indoorkin Productions.  </p>
   </div>
 </body>
 </html>
