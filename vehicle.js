@@ -33,13 +33,13 @@ function Vehicle(x, y, dna) {
 
   if (dna == undefined) {
     //Food weight:
-    this.dna[0] = random(-2, 2);
+    this.dna[0] = random(-3, 3);
     //Poison weight:
     this.dna[1] = random(-2, 2);
     //Food perception radius
     this.dna[2] = random(10, 100);
     //Poison perception radius
-    this.dna[3] = random(10, 100);
+    this.dna[3] = random(10, 115);
     //Innate speed range:
     this.dna[4] = random(1, 10);
   } else {
@@ -98,7 +98,7 @@ function Vehicle(x, y, dna) {
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
     
     steerG.mult(this.dna[0]);
-    steerP.mult(this.dna[0]);
+    steerP.mult(this.dna[1]);
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
@@ -156,9 +156,11 @@ function Vehicle(x, y, dna) {
       if (d < 4) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
+        if (list != predators) {
         list.splice(i, 1);
         //add nutrition amount to health (food or poison value):
         this.health += nutrition;
+        }
       } 
       else {
         //if distance from veh to object < infinity and veh food/poison perception:

@@ -14,8 +14,8 @@ function Predator(x, y, dna) {
   this.health = 1;
   
   //amnt gain/lost to health from food/poison:
-  this.foodValue = foodValueSlider.value() / 100;
-  this.poisonValue = -(poisonValueSlider.value() / 100);
+  this.foodValue = pFoodValueSlider.value() / 100;
+  this.poisonValue = -(pPoisonValueSlider.value() / 100);
   //rate at which vehicle clones itself:
   this.cloneRate = vCloneRSlider.value() / 1000;
   this.dna = [];
@@ -23,15 +23,15 @@ function Predator(x, y, dna) {
 
   if (dna == undefined) {
     //Food weight:
-    this.dna[0] = random(-3, 3);
+    this.dna[0] = random(-2, 3);
     //Poison weight:
-    this.dna[1] = random(-1, 1);
+    this.dna[1] = random(-2, 2);
     //Food perception radius
-    this.dna[2] = random(10, 100);
+    this.dna[2] = random(50, 200);
     //Poison perception radius
     this.dna[3] = random(10, 100);
     //Innate speed range:
-    this.dna[4] = random(1, 15);
+    this.dna[4] = random(1, 10);
   } else {
     //Mutation:
     this.dna[0] = dna[0];
@@ -81,10 +81,9 @@ function Predator(x, y, dna) {
       //   // steer toward food based on food perception in dna and eat
     //Add a for statement here that cycles through vehicles array and returns i    
     var steerP = this.eat(prey, this.foodValue, this.dna[2]);
-    if (prey.length <= 5) {
-      var steerP = this.eat(good, this.foodValue, this.dna[2]);
-      print("no more prey!")
-    }
+    //if (prey.length <= 5) {
+      //var steerP = this.eat(good, this.foodValue, this.dna[2]);
+    //}
     //var steerG = this.eat(good, this.foodValue, this.dna[2])
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
