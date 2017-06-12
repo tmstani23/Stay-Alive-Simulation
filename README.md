@@ -23,3 +23,5 @@ Screenshot:
 
 
 ![Alt text](https://github.com/tmstani23/Stay-Alive-Simulation/blob/Development/scrn1.jpg)
+
+![Alt text](https://github.com/tmstani23/Stay-Alive-Simulation/blob/Development/scrn2.jpg)
