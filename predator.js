@@ -1,8 +1,8 @@
 
 
 function Predator(x, y, dna) {
-  var mutationRate = mutationRSlider.value() / 100;
-  var healthLoss = healthLostSlider.value() / 1000;
+  var mutationRate = pMutationRSlider.value() / 100;
+  var healthLoss = predHLostSlider.value() / 1000;
   var preyPos = ""; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
@@ -17,7 +17,7 @@ function Predator(x, y, dna) {
   this.foodValue = pFoodValueSlider.value() / 100;
   this.poisonValue = -(pPoisonValueSlider.value() / 100);
   //rate at which vehicle clones itself:
-  this.cloneRate = vCloneRSlider.value() / 1000;
+  this.cloneRate = pCloneRSlider.value() / 1000;
   this.dna = [];
   //pred is an argument of the Vehicle class
 
@@ -25,7 +25,7 @@ function Predator(x, y, dna) {
     //Food weight:
     this.dna[0] = random(-2, 3);
     //Poison weight:
-    this.dna[1] = random(-2, 2);
+    this.dna[1] = random(-1, 1);
     //Food perception radius
     this.dna[2] = random(50, 200);
     //Poison perception radius
@@ -78,25 +78,30 @@ function Predator(x, y, dna) {
 
   this.behaviors = function(good, bad, prey) {
     
-      //   // steer toward food based on food perception in dna and eat
-    //Add a for statement here that cycles through vehicles array and returns i    
+    // steer toward food based on food perception in dna and eat
     var steerP = this.eat(prey, this.foodValue, this.dna[2]);
-    //if (prey.length <= 5) {
-      //var steerP = this.eat(good, this.foodValue, this.dna[2]);
-    //}
+    if (omnivoreCheckbox.checked()){
+      //predators can eat green food
+      var steerG = this.eat(good, this.foodValue, this.dna[2]);
+      steerG.mult(this.dna[0]);
+      this.applyForce(steerG);
+      
+    }
+    //old code:
     //var steerG = this.eat(good, this.foodValue, this.dna[2])
+    
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
     //multiply the steering force by food weight value:
     
     steerP.mult(this.dna[0]);
-    //steerG.mult(this.dna[0]);
+    
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
     this.applyForce(steerP);
-    //this.applyForce(steerG);
     this.applyForce(steerB);
+    
     
     
   }
@@ -114,7 +119,8 @@ function Predator(x, y, dna) {
     if (random(1) < this.cloneRate) {
       //create new vehicle with current vehicle's dna
       return new Predator(this.position.x, this.position.y, this.dna);
-    } else {
+    } 
+    else {
         return null;
     }
   };
