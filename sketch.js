@@ -154,7 +154,7 @@ function draw() {
   for (var i = vehicles.length - 1; i >= 0; i--) {
     
     vehicles[i].boundaries();
-    vehicles[i].behaviors(food, poison);
+    vehicles[i].behaviors(food, poison, predators);
     vehicles[i].update();
     vehicles[i].display();
     

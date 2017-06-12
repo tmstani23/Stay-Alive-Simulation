@@ -1,9 +1,9 @@
 
 
-function Predator(x, y, pred, dna) {
+function Predator(x, y, dna) {
   var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000;
-   
+  var preyPos = ""; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -23,15 +23,15 @@ function Predator(x, y, pred, dna) {
 
   if (dna == undefined) {
     //Food weight:
-    this.dna[0] = random(-2, 2);
+    this.dna[0] = random(-3, 3);
     //Poison weight:
-    this.dna[1] = random(-2, 2);
+    this.dna[1] = random(-1, 1);
     //Food perception radius
     this.dna[2] = random(10, 100);
     //Poison perception radius
     this.dna[3] = random(10, 100);
     //Innate speed range:
-    this.dna[4] = random(1, 10);
+    this.dna[4] = random(1, 15);
   } else {
     //Mutation:
     this.dna[0] = dna[0];
@@ -80,17 +80,23 @@ function Predator(x, y, pred, dna) {
     
       //   // steer toward food based on food perception in dna and eat
     //Add a for statement here that cycles through vehicles array and returns i    
-    var steerG = this.eat(prey[i].position, this.foodValue, this.dna[2]);
-    //var steerG = this.eat(good, this.foodValue, this.dna[2]);
+    var steerP = this.eat(prey, this.foodValue, this.dna[2]);
+    if (prey.length <= 5) {
+      var steerP = this.eat(good, this.foodValue, this.dna[2]);
+      print("no more prey!")
+    }
+    //var steerG = this.eat(good, this.foodValue, this.dna[2])
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
     //multiply the steering force by food weight value:
     
-    steerG.mult(this.dna[0]);
+    steerP.mult(this.dna[0]);
+    //steerG.mult(this.dna[0]);
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
-    this.applyForce(steerG);
+    this.applyForce(steerP);
+    //this.applyForce(steerG);
     this.applyForce(steerB);
     
     
@@ -121,23 +127,41 @@ function Predator(x, y, pred, dna) {
     for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
-      var d = this.position.dist(list[i]);
-      //print(list);
+      if (list == vehicles) {
+        
+      try {
+          preyPos = list[i].position;
+        }
+        catch(err) {
+        //print(err.message)
+        }
+      }
+      else {
+        preyPos = list[i];
+      }
+      var d = this.position.dist(preyPos);
       
       //eating occurs here:
       if (d < 4) {
       //splice removes the chosen index from the array
       //the 1 is how many elements to remove
+        
         list.splice(i, 1);
         //add nutrition amount to health (food or poison value):
         this.health += nutrition;
-      } else {
+      } 
+      else {
         //if distance from veh to object < infinity and veh food/poison perception:
         if (d < record && d < perception) {
           //set record to distance
           record = d;
           //closest = current list element (food or poison):
-          closest = list[i];
+          if (list == vehicles) {
+            closest = preyPos;
+          } 
+          else {
+            closest = list[i];
+          }
         } 
       }
     }
@@ -151,7 +175,9 @@ function Predator(x, y, pred, dna) {
   };
 
   this.seek = function(target) {
-    var desired = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
+    
+    var desired =  p5.Vector.sub(target,this.position);
+    
     //Set maximum speed:
     desired.setMag(this.maxspeed);
     // Steering = Desired minus Velocity
@@ -199,9 +225,9 @@ function Predator(x, y, pred, dna) {
     strokeWeight(1);
     stroke(255);
     beginShape();
-    vertex(0, -this.r*2);
-    vertex(-this.r, this.r*2);
-    vertex(this.r, this.r*2);
+    vertex(0, -this.r*4);
+    vertex(-this.r, this.r*4);
+    vertex(this.r, this.r*4);
     endShape(CLOSE);
     pop();
 

@@ -13,7 +13,7 @@
 function Vehicle(x, y, dna) {
   var mutationRate = mutationRSlider.value() / 100;
   var healthLoss = healthLostSlider.value() / 1000;
-   
+  var predPos = ""; 
   this.acceleration = createVector(0,0);
   this.velocity = createVector(0,-2);
   this.position = createVector(x,y);
@@ -88,20 +88,22 @@ function Vehicle(x, y, dna) {
   };
 
  
-  this.behaviors = function(good, bad, prey) {
+  this.behaviors = function(good, bad, predators) {
   
    
    
-    
+    var steerP = this.eat(predators, this.poisonValue, this.dna[3]);
     var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //steer toward poison based on poison perception in dna and eat
     var steerB = this.eat(bad, this.poisonValue, this.dna[3]);
     
     steerG.mult(this.dna[0]);
+    steerP.mult(this.dna[0]);
     //multiply steering force by poison weight value:
     steerB.mult(this.dna[1]);
     //call applyforce function using result of steering values:
     this.applyForce(steerG);
+    this.applyForce(steerP);
     this.applyForce(steerB);
    
     
@@ -135,9 +137,19 @@ function Vehicle(x, y, dna) {
     for (var i = list.length -1; i >= 0;  i--) {
       //store distance between current vehicle
       // position and current list element i:
-      
-      
-      var d = this.position.dist(list[i]);
+      if (list == predators) {
+        
+        try {
+          predPos = list[i].position;
+        }
+        catch(err) {
+        print(err.message)
+        }
+      }
+      else {
+        predPos = list[i];
+      }
+      var d = this.position.dist(predPos);
       //print(list);
       
       //eating occurs here:
@@ -147,13 +159,19 @@ function Vehicle(x, y, dna) {
         list.splice(i, 1);
         //add nutrition amount to health (food or poison value):
         this.health += nutrition;
-      } else {
+      } 
+      else {
         //if distance from veh to object < infinity and veh food/poison perception:
         if (d < record && d < perception) {
           //set record to distance
           record = d;
           //closest = current list element (food or poison):
-          closest = list[i];
+          if (list == predators) {
+            closest = predPos;
+          } 
+          else {
+            closest = list[i];
+          }
         } 
       }
     }
