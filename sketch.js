@@ -12,6 +12,8 @@ var startingFood;
 var startingPoison;
 var foodMax = 150;
 var poisonMax = 150;
+var maxVehicles = 250;
+var maxPreds = 200;
 
 
 //food/poison spawn rates:
@@ -23,6 +25,7 @@ var vCloneRSlider;
 var mutationRSlider;
 var pCloneRSlider;
 var pMutationRSlider;
+var randomSpawnRSlider;
 var extinctCheckbox;
 var omnivoreCheckbox;
 var debug;
@@ -94,6 +97,9 @@ function setup() {
   pMutationRSlider = createSlider(0, 100, 10);
   pMutationRSlider.parent('pMutationR-holder');
 
+  randomSpawnRSlider = createSlider(0, 100, 10);
+  randomSpawnRSlider.parent('randomSpawnR-holder');
+
   statistics = createP();
   statistics.parent('stats-holder');
   
@@ -164,14 +170,14 @@ function draw() {
   
   if (extinctCheckbox.checked()) {
     //every once in a while create new vehicle at random location
-    if (random(1) < mutationRSlider.value()/1000) {
+    if (random(1) < randomSpawnRSlider.value() / 1000) {
       var x = random(width);
       var y = random(height);
       var randomVehicle = new Vehicle(x, y, dna = undefined)
       vehicles.push(randomVehicle);
     }
     //everyone once in a while create new predator spawns at random location
-    if (random(1) < mutationRSlider.value()/1000) {
+    if (random(1) < randomSpawnRSlider.value() / 1000) {
       var x = random(width);
       var y = random(height);
       var randomPredator = new Predator(x, y, dna = undefined)
@@ -205,7 +211,8 @@ function draw() {
     
     //add new clone to vehicles array
     var newVehicle = vehicles[i].clone();
-    if (newVehicle != null) {
+    if (newVehicle != null && vehicles.length <= maxVehicles) {
+      
       vehicles.push(newVehicle);
     }
     //delete vehicle from array if dead
@@ -231,7 +238,8 @@ function draw() {
 
     //add new clone to vehicles array
     var newPredator = predators[i].clone();
-    if (newPredator != null) {
+    if (newPredator != null && predators.length <= maxPreds) {
+      
       predators.push(newPredator);
     }
     //delete vehicle from array if dead
@@ -255,6 +263,11 @@ function draw() {
     stats_text += "Starting Predators: " + startingPreds.value() + "<br>";
     stats_text += "Starting Food: " + startingFood.value() + "<br>";
     stats_text += "Starting Poison: " + startingPoison.value() + "<br>";
+    stats_text += "Max Vehicles: " + maxVehicles + "<br>";
+    stats_text += "Max Predators: " + maxPreds + "<br>";
+    stats_text += "Max Food: " + foodMax + "<br>";
+    stats_text += "Max Poison: " + poisonMax + "<br>";
+    stats_text += "Extinction Mode Spawn Rate: " + randomSpawnRSlider.value() + "%" + "<br>";
     stats_text += "Prey Food Value: " + foodValueSlider.value() + "<br>";
     stats_text += "Predator Food Value: " + pFoodValueSlider.value() + "<br>";
     stats_text += "Prey Poison Value: " + poisonValueSlider.value() + "<br>";
