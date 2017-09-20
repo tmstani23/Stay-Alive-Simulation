@@ -23,9 +23,9 @@ function Predator(x, y, dna) {
 
   if (dna == undefined) {
     //Food weight:
-    this.dna[0] = random(-2, 3);
+    this.dna[0] = random(-3, 3);
     //Poison weight:
-    this.dna[1] = random(-1, 1);
+    this.dna[1] = random(-2, 2);
     //Food perception radius
     this.dna[2] = random(50, 200);
     //Poison perception radius

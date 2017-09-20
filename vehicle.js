@@ -1,12 +1,5 @@
 
 
-//old hardcoded values:
-//var healthLoss = .005;
-//this.foodValue = 0.3;
-//this.poisonValue = -0.75;
-//this.cloneRate = 0.0025;
-//var mutationRate = 0.1;
-
 
 
 // The "Vehicle" class
@@ -89,9 +82,7 @@ function Vehicle(x, y, dna) {
 
  
   this.behaviors = function(good, bad, predators) {
-  
-   
-   
+    
     var steerP = this.eat(predators, this.poisonValue, this.dna[3]);
     var steerG = this.eat(good, this.foodValue, this.dna[2]);
     //steer toward poison based on poison perception in dna and eat
@@ -105,8 +96,6 @@ function Vehicle(x, y, dna) {
     this.applyForce(steerG);
     this.applyForce(steerP);
     this.applyForce(steerB);
-   
-    
   };
 
   this.applyForce = function(force) {
@@ -143,7 +132,7 @@ function Vehicle(x, y, dna) {
           predPos = list[i].position;
         }
         catch(err) {
-        print(err.message)
+        console.log(err.message)
         }
       }
       else {
@@ -243,21 +232,6 @@ function Vehicle(x, y, dna) {
     vertex(this.r, this.r*2);
     endShape(CLOSE);
     pop();
-    // old code:
-    // if (this.predator = true) {
-    //   fill(pCol);
-    //   stroke(pCol);
-    //   strokeWeight(1);
-    //   stroke(255);
-    //   beginShape();
-    //   vertex(0, -this.r*2);
-    //   vertex(-this.r, this.r*2);
-    //   vertex(this.r, this.r*2);
-    //   endShape(CLOSE);
-    //   pop();
-    // }
-    
-    
   };
 
   this.boundaries = function() {
