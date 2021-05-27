@@ -1,6 +1,8 @@
 # Stay-Alive-Simulation
 A simulation using evolutionary algorithms and autonomous steering.
 
+Live link: https://tmstani23.github.io/Stay-Alive-Simulation/
+
 To run:
 
 Click the clone or download dropdown in github  
